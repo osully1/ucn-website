@@ -1,0 +1,40 @@
+// OVERRIDE YOUR VARIABLES HERE
+$font-family-base: "Montserrat", sans-serif;
+$grid-gutter-width: 1rem;
+
+// $theme-colors: (
+//   "primary": $primary,
+//   "secondary": $secondary,
+//   "success": $success,
+//   "info": $info,
+//   "warning": $warning,
+//   "danger": $danger,
+//   "light": $light,
+//   "dark": $dark,
+//   "white": $white,
+//   "muted": $muted,
+//   "warning-secondary": $warning-secondary,
+// );
+
+$modal-md: 570px;
+$modal-content-border-width: 1px;
+$modal-content-border-radius: 5 * 0.25rem;
+$modal-content-inner-border-radius: subtract(
+  $modal-content-border-radius,
+  $modal-content-border-width
+);
+
+$spacer: 0.5rem;
+$spacers: (
+  0: 0,
+);
+@for $i from 1 through 60 {
+  $spacers: map-merge(
+    $spacers,
+    (
+      $i: (
+        $i * $spacer,
+      ),
+    )
+  );
+}

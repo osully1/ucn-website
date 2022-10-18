@@ -1,0 +1,128 @@
+//make it responsive
+$responsive: "border-top", "border-end", "border-bottom", "border-start",
+  "border", "border-color", "border-width", "rounded", "translate-middle",
+  "position", "top", "start", "bottom", "end", "width", "height",
+  "background-color", "font-size", "font-weight", "color", "bg-opacity";
+
+//add new values to existing utilities
+$add-values: (
+  "display": (
+    contents,
+  ),
+  "translate-middle": (
+    none: translate(0, 0),
+  ),
+  "rounded": (
+    4: $border-radius * 3,
+    5: $border-radius * 5,
+  ),
+  "rounded-top": (
+    4: $border-radius * 3,
+    5: $border-radius * 5,
+  ),
+  "rounded-bottom": (
+    4: $border-radius * 3,
+    5: $border-radius * 5,
+  ),
+  "font-weight": (
+    thin: 100,
+    medium: 500,
+    black: 900,
+  ),
+  "font-size": (
+    hero: 10rem,
+    small: 0.8rem,
+  ),
+  "border-color": (
+    yellow: #ffdf00,
+  ),
+);
+
+//add new utilities
+$new-utilities: (
+  "cursor": (
+    property: cursor,
+    class: cursor,
+    responsive: true,
+    values: auto pointer grab,
+  ),
+  "outline": (
+    property: outline,
+    class: outline,
+    responsive: true,
+    values: (
+      null: $border-color solid $border-width,
+    ),
+  ),
+  "outline-color": (
+    property: outline-color,
+    class: outline,
+    values: $theme-colors,
+  ),
+  "outline-width": (
+    property: outline-width,
+    class: outline,
+    values: $border-widths,
+  ),
+  "pixel-fix": (
+    property: transform,
+    class: pixel-fix,
+    values: (
+      top: translateY(-1px),
+      bottom: translateY(1px),
+      left: translateX(-1px),
+      right: translateX(1px),
+    ),
+  ),
+  "isolation": (
+    property: isolation,
+    class: "",
+    responsive: true,
+    values: isolate,
+  ),
+);
+
+@use "sass:map";
+
+/* Add utilities based on the variables above*/
+@function add-values($utility-name, $utility-value) {
+  $local-utility-value: map-get($utilities, $utility-name, "values");
+  @if type-of($local-utility-value) == "map" {
+    @return map-merge(
+      map-get($utilities, $utility-name),
+      "values",
+      $utility-value
+    );
+  }
+  @return map-merge(
+    map-get($utilities, $utility-name),
+    (
+      values:
+        append(
+          map-get(map-get($utilities, $utility-name), "values"),
+          $utility-value
+        ),
+    )
+  );
+}
+
+@function set-responsive($utility-name) {
+  @return map.set(map-get($utilities, $utility-name), "responsive", true);
+}
+
+$utilities: map-merge($utilities, $new-utilities);
+$add-map: ();
+
+@each $name, $value in $add-values {
+  $add-map: map.set($add-map, $name, add-values($name, $value));
+}
+
+$utilities: map-merge($utilities, $add-map);
+
+$responsive-map: ();
+
+@each $value in $responsive {
+  $responsive-map: map.set($responsive-map, $value, set-responsive($value));
+}
+
+$utilities: map-merge($utilities, $responsive-map);
